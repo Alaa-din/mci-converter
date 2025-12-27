@@ -45,7 +45,7 @@ export default function CoupleCalculator() {
       <div className="bg-blue-500/10 border border-blue-500/30 rounded-lg p-4 mb-6">
         <h3 className="font-semibold text-blue-300 mb-2">Définition</h3>
         <p className="text-sm text-white/80 mb-3">
-          <strong>Ce (Couple effectif)</strong> : Couple disponible à l'arbre moteur.
+          <strong>Ce (Couple effectif)</strong> : Couple disponible à l&apos;arbre moteur.
           <br />
           <strong>Ci (Couple indiqué)</strong> : Couple théorique développé dans les cylindres.
         </p>

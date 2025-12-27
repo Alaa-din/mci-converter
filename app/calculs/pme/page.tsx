@@ -48,7 +48,7 @@ export default function PMECalculator() {
         <h3 className="font-semibold text-blue-300 mb-2">Définition</h3>
         <p className="text-sm text-white/80 mb-3">
           La PME représente la pression constante fictive qui, appliquée pendant la course motrice,
-          produirait le même travail que le cycle réel. C'est un indicateur de l'efficacité du moteur.
+          produirait le même travail que le cycle réel. C&apos;est un indicateur de l&apos;efficacité du moteur.
         </p>
         <div className="bg-black/20 rounded px-3 py-2 border border-white/10">
           <p className="font-mono text-sm">PME = (Ce × τ × 4π) / Vd</p>

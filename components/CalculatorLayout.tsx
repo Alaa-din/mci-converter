@@ -23,7 +23,7 @@ export default function CalculatorLayout({ title, description, icon, children }:
           className="inline-flex items-center gap-2 text-white/70 hover:text-white mb-6 transition-colors"
         >
           <ArrowLeft className="w-4 h-4" />
-          <span>Retour à l'accueil</span>
+          <span>Retour à l&apos;accueil</span>
         </Link>
 
         <div className="bg-white/10 backdrop-blur-lg rounded-2xl shadow-2xl p-8 border border-white/20">
@@ -89,7 +89,7 @@ export function CalculatorForm({
     <DndContext onDragEnd={handleDragEnd}>
       <div className="space-y-6">
         <div className="flex items-center justify-between">
-          <h2 className="text-lg font-semibold">Données d'entrée</h2>
+          <h2 className="text-lg font-semibold">Données d&apos;entrée</h2>
           <label className="flex items-center gap-2 cursor-pointer">
             <input
               type="checkbox"

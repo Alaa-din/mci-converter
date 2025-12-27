@@ -133,7 +133,7 @@ const UnitConverter = () => {
     <div className="bg-white/10 backdrop-blur-lg rounded-2xl shadow-2xl p-8 border border-white/20">
       <div className="flex items-center gap-3 mb-6">
         <Calculator className="w-8 h-8 text-blue-400" />
-        <h2 className="text-2xl font-bold">Convertisseur d'unités</h2>
+        <h2 className="text-2xl font-bold">Convertisseur d&apos;unités</h2>
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-3 gap-3 mb-6">

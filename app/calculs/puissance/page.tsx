@@ -45,7 +45,7 @@ export default function PuissanceCalculator() {
       <div className="bg-blue-500/10 border border-blue-500/30 rounded-lg p-4 mb-6">
         <h3 className="font-semibold text-blue-300 mb-2">Définition</h3>
         <p className="text-sm text-white/80 mb-3">
-          <strong>Pe (Puissance effective)</strong> : Puissance disponible à l'arbre moteur.
+          <strong>Pe (Puissance effective)</strong> : Puissance disponible à l&apos;arbre moteur.
           <br />
           <strong>Pi (Puissance indiquée)</strong> : Puissance théorique développée dans les cylindres.
         </p>
