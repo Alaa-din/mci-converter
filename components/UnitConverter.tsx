@@ -92,10 +92,10 @@ const UnitConverter = () => {
     return (value * fromFactor) / toFactor;
   };
 
-  const handleConvert = () => {
+  useEffect(() => {
     const val = parseFloat(inputValue);
-    if (isNaN(val)) {
-      setResult('Valeur invalide');
+    if (isNaN(val) || inputValue === '') {
+      setResult(null);
       return;
     }
 
@@ -105,13 +105,13 @@ const UnitConverter = () => {
     if (category.special && selectedCategory === 'temperature') {
       converted = convertTemperature(val, fromUnit, toUnit);
     } else {
-      const fromFactor = category.units[fromUnit].factor;
-      const toFactor = category.units[toUnit].factor;
+      const fromFactor = category.units[fromUnit]?.factor || 1;
+      const toFactor = category.units[toUnit]?.factor || 1;
       converted = convertStandard(val, fromFactor, toFactor);
     }
 
     setResult(converted.toFixed(4));
-  };
+  }, [inputValue, fromUnit, toUnit, selectedCategory]);
 
   const currentCategory = categories[selectedCategory];
   const Icon = currentCategory.icon;
@@ -125,6 +125,10 @@ const UnitConverter = () => {
       setFromUnit(unitKeys[0]);
       setToUnit(unitKeys[1]);
     }
+    // Don't clear input value on category change, just let it recalculate or persist if appropriate.
+    // Actually, clearing it might be safer to avoid confusion, but user might want to keep the number.
+    // Let's keep the clear behavior for now as per previous logic, but maybe that conflicts with the new effect?
+    // No, if we setInputValue(''), the other effect triggers and clears result.
     setInputValue('');
     setResult(null);
   }, [selectedCategory]);
@@ -144,8 +148,8 @@ const UnitConverter = () => {
               key={key}
               onClick={() => setSelectedCategory(key)}
               className={`p-3 rounded-xl flex flex-col items-center gap-2 transition-all ${selectedCategory === key
-                  ? 'bg-blue-500 text-white shadow-lg scale-105'
-                  : 'bg-white/5 text-white/70 hover:bg-white/10'
+                ? 'bg-blue-500 text-white shadow-lg scale-105'
+                : 'bg-white/5 text-white/70 hover:bg-white/10'
                 }`}
             >
               <CategoryIcon className="w-5 h-5" />
@@ -221,15 +225,8 @@ const UnitConverter = () => {
             </div>
           </div>
 
-          <button
-            onClick={handleConvert}
-            className="w-full py-3 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white font-semibold rounded-lg shadow-lg transition-all transform hover:scale-105"
-          >
-            Convertir
-          </button>
-
           {result !== null && (
-            <div className="mt-4 p-4 bg-green-500/20 border border-green-500/50 rounded-lg">
+            <div className="mt-4 p-4 bg-green-500/20 border border-green-500/50 rounded-lg animate-in fade-in slide-in-from-top-2 duration-300">
               <p className="text-sm text-white/70 mb-1">Résultat :</p>
               <p className="text-2xl font-bold">{result} {toUnit}</p>
             </div>
