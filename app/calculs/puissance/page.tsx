@@ -2,28 +2,39 @@
 
 import React, { useState } from 'react';
 import { Zap } from 'lucide-react';
-import { calculatePe, calculatePi } from '@/lib/mci';
+import { calculatePe, calculatePi, calculatePeFromPME } from '@/lib/mci';
 import CalculatorLayout, { CalculatorForm } from '@/components/CalculatorLayout';
 import PedagogicalSteps from '@/components/PedagogicalSteps';
 
 export default function PuissanceCalculator() {
   const [calcType, setCalcType] = useState<'Pe' | 'Pi'>('Pe');
+  const [method, setMethod] = useState<'torque' | 'pme'>('torque');
   const [C, setC] = useState('');
   const [N, setN] = useState('');
+  const [PME, setPME] = useState('');
+  const [Vd, setVd] = useState('');
   const [showSteps, setShowSteps] = useState(false);
   const [result, setResult] = useState<any>(null);
 
   const handleCalculate = () => {
     try {
-      const params = {
-        [calcType === 'Pe' ? 'Ce' : 'Ci']: parseFloat(C),
+      const params: any = {
         N: parseFloat(N),
       };
 
-      const calcResult = calcType === 'Pe'
-        ? calculatePe(params, showSteps)
-        : calculatePi(params, showSteps);
-      setResult(calcResult);
+      if (calcType === 'Pe') {
+        if (method === 'torque') {
+          params.Ce = parseFloat(C);
+          setResult(calculatePe(params, showSteps));
+        } else {
+          params.PME = parseFloat(PME) * 1e5; // Convert bar to Pa
+          params.Vd = parseFloat(Vd) / 1e6; // Convert cm3 to m3
+          setResult(calculatePeFromPME(params, showSteps));
+        }
+      } else {
+        params.Ci = parseFloat(C);
+        setResult(calculatePi(params, showSteps));
+      }
     } catch (error: any) {
       alert(error.message);
     }
@@ -34,6 +45,8 @@ export default function PuissanceCalculator() {
     { id: 'preset-c-2', label: 'Sportive', value: 400, unit: 'N·m', targetInput: 'C' },
     { id: 'preset-n-1', label: 'Régime bas', value: 2000, unit: 'tr/min', targetInput: 'N' },
     { id: 'preset-n-2', label: 'Régime haut', value: 6000, unit: 'tr/min', targetInput: 'N' },
+    { id: 'preset-pme-1', label: 'PME Std', value: 10, unit: 'bar', targetInput: 'PME' },
+    { id: 'preset-vd-1', label: '2.0L', value: 2000, unit: 'cm³', targetInput: 'Vd' },
   ];
 
   return (
@@ -50,49 +63,93 @@ export default function PuissanceCalculator() {
           <strong>Pi (Puissance indiquée)</strong> : Puissance théorique développée dans les cylindres.
         </p>
         <div className="bg-black/20 rounded px-3 py-2 border border-white/10">
-          <p className="font-mono text-sm">P = C × ω = C × (2π × N) / 60</p>
+          {method === 'torque' ? (
+            <p className="font-mono text-sm">P = C × ω = C × (2π × N) / 60</p>
+          ) : (
+            <p className="font-mono text-sm">Pe = (PME × Vd × N) / 120 (4 temps)</p>
+          )}
           <p className="text-xs text-white/60 mt-2">
-            C : Couple (N·m) | N : Vitesse de rotation (tr/min) | ω : Vitesse angulaire (rad/s)
+            C : Couple (N·m) | N : Vitesse (tr/min) | PME : Pression (Pa) | Vd : Cylindrée (m³)
           </p>
         </div>
       </div>
 
       <div className="mb-4">
         <label className="block text-sm font-medium text-white/70 mb-2">Type de calcul</label>
-        <div className="flex gap-2">
+        <div className="flex gap-2 mb-4">
           <button
             onClick={() => setCalcType('Pe')}
-            className={`flex-1 py-2 rounded-lg font-medium transition-all ${
-              calcType === 'Pe'
+            className={`flex-1 py-2 rounded-lg font-medium transition-all ${calcType === 'Pe'
                 ? 'bg-blue-500 text-white'
                 : 'bg-white/5 text-white/70 hover:bg-white/10'
-            }`}
+              }`}
           >
             Puissance effective (Pe)
           </button>
           <button
             onClick={() => setCalcType('Pi')}
-            className={`flex-1 py-2 rounded-lg font-medium transition-all ${
-              calcType === 'Pi'
+            className={`flex-1 py-2 rounded-lg font-medium transition-all ${calcType === 'Pi'
                 ? 'bg-blue-500 text-white'
                 : 'bg-white/5 text-white/70 hover:bg-white/10'
-            }`}
+              }`}
           >
             Puissance indiquée (Pi)
           </button>
         </div>
+
+        {calcType === 'Pe' && (
+          <div className="flex gap-2">
+            <button
+              onClick={() => setMethod('torque')}
+              className={`flex-1 py-1.5 text-sm rounded-lg transition-all ${method === 'torque'
+                  ? 'bg-blue-400/20 text-blue-300 border border-blue-400/50'
+                  : 'bg-white/5 text-white/60 hover:bg-white/10'
+                }`}
+            >
+              Via Couple (Ce)
+            </button>
+            <button
+              onClick={() => setMethod('pme')}
+              className={`flex-1 py-1.5 text-sm rounded-lg transition-all ${method === 'pme'
+                  ? 'bg-blue-400/20 text-blue-300 border border-blue-400/50'
+                  : 'bg-white/5 text-white/60 hover:bg-white/10'
+                }`}
+            >
+              Via PME (4 temps)
+            </button>
+          </div>
+        )}
       </div>
 
       <CalculatorForm
         inputs={[
-          {
-            id: 'C',
-            label: calcType === 'Pe' ? 'Couple effectif (Ce)' : 'Couple indiqué (Ci)',
-            value: C,
-            onChange: setC,
-            unit: 'N·m',
-            placeholder: '200',
-          },
+          ...(calcType === 'Pe' && method === 'pme' ? [
+            {
+              id: 'PME',
+              label: 'Pression Moyenne Effective (PME)',
+              value: PME,
+              onChange: setPME,
+              unit: 'bar',
+              placeholder: '10',
+            },
+            {
+              id: 'Vd',
+              label: 'Cylindrée (Vt)',
+              value: Vd,
+              onChange: setVd,
+              unit: 'cm³',
+              placeholder: '2000',
+            }
+          ] : [
+            {
+              id: 'C',
+              label: calcType === 'Pe' ? 'Couple effectif (Ce)' : 'Couple indiqué (Ci)',
+              value: C,
+              onChange: setC,
+              unit: 'N·m',
+              placeholder: '200',
+            }
+          ]),
           {
             id: 'N',
             label: 'Vitesse de rotation (N)',

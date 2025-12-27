@@ -10,6 +10,63 @@ interface Category {
   units: any;
 }
 
+const categories: Record<string, Category> = {
+  puissance: {
+    name: 'Puissance',
+    icon: Zap,
+    units: {
+      'W': { name: 'Watt', factor: 1 },
+      'kW': { name: 'Kilowatt', factor: 1000 },
+      'ch': { name: 'Cheval vapeur (metric)', factor: 735.5 },
+      'hp': { name: 'Horsepower (imperial)', factor: 745.7 }
+    }
+  },
+  couple: {
+    name: 'Couple',
+    icon: Gauge,
+    units: {
+      'Nm': { name: 'Newton-mètre', factor: 1 },
+      'kgm': { name: 'Kilogramme-mètre', factor: 9.80665 },
+      'lbft': { name: 'Livre-pied', factor: 1.35582 }
+    }
+  },
+  pression: {
+    name: 'Pression',
+    icon: Wind,
+    units: {
+      'Pa': { name: 'Pascal', factor: 1 },
+      'kPa': { name: 'Kilopascal', factor: 1000 },
+      'bar': { name: 'Bar', factor: 100000 },
+      'psi': { name: 'PSI', factor: 6894.76 },
+      'atm': { name: 'Atmosphère', factor: 101325 }
+    }
+  },
+  temperature: {
+    name: 'Température',
+    icon: Thermometer,
+    special: true,
+    units: ['°C', '°F', 'K']
+  },
+  volume: {
+    name: 'Cylindrée/Volume',
+    icon: Droplet,
+    units: {
+      'cm³': { name: 'Centimètre cube', factor: 1 },
+      'L': { name: 'Litre', factor: 1000 },
+      'in³': { name: 'Pouce cube', factor: 16.3871 }
+    }
+  },
+  vitesse: {
+    name: 'Vitesse de rotation',
+    icon: Calculator,
+    units: {
+      'rpm': { name: 'Tours/minute', factor: 1 },
+      'rad/s': { name: 'Radians/seconde', factor: 9.5493 },
+      'Hz': { name: 'Hertz', factor: 60 }
+    }
+  }
+};
+
 const UnitConverter = () => {
   const [selectedCategory, setSelectedCategory] = useState('puissance');
   const [inputValue, setInputValue] = useState('');
@@ -17,73 +74,16 @@ const UnitConverter = () => {
   const [toUnit, setToUnit] = useState('');
   const [result, setResult] = useState<string | null>(null);
 
-  const categories: Record<string, Category> = {
-    puissance: {
-      name: 'Puissance',
-      icon: Zap,
-      units: {
-        'W': { name: 'Watt', factor: 1 },
-        'kW': { name: 'Kilowatt', factor: 1000 },
-        'ch': { name: 'Cheval vapeur (metric)', factor: 735.5 },
-        'hp': { name: 'Horsepower (imperial)', factor: 745.7 }
-      }
-    },
-    couple: {
-      name: 'Couple',
-      icon: Gauge,
-      units: {
-        'Nm': { name: 'Newton-mètre', factor: 1 },
-        'kgm': { name: 'Kilogramme-mètre', factor: 9.80665 },
-        'lbft': { name: 'Livre-pied', factor: 1.35582 }
-      }
-    },
-    pression: {
-      name: 'Pression',
-      icon: Wind,
-      units: {
-        'Pa': { name: 'Pascal', factor: 1 },
-        'kPa': { name: 'Kilopascal', factor: 1000 },
-        'bar': { name: 'Bar', factor: 100000 },
-        'psi': { name: 'PSI', factor: 6894.76 },
-        'atm': { name: 'Atmosphère', factor: 101325 }
-      }
-    },
-    temperature: {
-      name: 'Température',
-      icon: Thermometer,
-      special: true,
-      units: ['°C', '°F', 'K']
-    },
-    volume: {
-      name: 'Cylindrée/Volume',
-      icon: Droplet,
-      units: {
-        'cm³': { name: 'Centimètre cube', factor: 1 },
-        'L': { name: 'Litre', factor: 1000 },
-        'in³': { name: 'Pouce cube', factor: 16.3871 }
-      }
-    },
-    vitesse: {
-      name: 'Vitesse de rotation',
-      icon: Calculator,
-      units: {
-        'rpm': { name: 'Tours/minute', factor: 1 },
-        'rad/s': { name: 'Radians/seconde', factor: 9.5493 },
-        'Hz': { name: 'Hertz', factor: 60 }
-      }
-    }
-  };
-
   const convertTemperature = (value: number, from: string, to: string): number => {
     let celsius: number;
 
     if (from === '°C') celsius = value;
-    else if (from === '°F') celsius = (value - 32) * 5/9;
+    else if (from === '°F') celsius = (value - 32) * 5 / 9;
     else if (from === 'K') celsius = value - 273.15;
     else celsius = value;
 
     if (to === '°C') return celsius;
-    else if (to === '°F') return celsius * 9/5 + 32;
+    else if (to === '°F') return celsius * 9 / 5 + 32;
     else if (to === 'K') return celsius + 273.15;
     return celsius;
   };
@@ -127,7 +127,7 @@ const UnitConverter = () => {
     }
     setInputValue('');
     setResult(null);
-  }, [selectedCategory, currentCategory]);
+  }, [selectedCategory]);
 
   return (
     <div className="bg-white/10 backdrop-blur-lg rounded-2xl shadow-2xl p-8 border border-white/20">
@@ -143,11 +143,10 @@ const UnitConverter = () => {
             <button
               key={key}
               onClick={() => setSelectedCategory(key)}
-              className={`p-3 rounded-xl flex flex-col items-center gap-2 transition-all ${
-                selectedCategory === key
+              className={`p-3 rounded-xl flex flex-col items-center gap-2 transition-all ${selectedCategory === key
                   ? 'bg-blue-500 text-white shadow-lg scale-105'
                   : 'bg-white/5 text-white/70 hover:bg-white/10'
-              }`}
+                }`}
             >
               <CategoryIcon className="w-5 h-5" />
               <span className="text-xs font-medium">{cat.name}</span>
@@ -186,15 +185,15 @@ const UnitConverter = () => {
               >
                 {currentCategory.special
                   ? (currentCategory.units as string[]).map((unit) => (
-                      <option key={unit} value={unit} className="bg-slate-800">
-                        {unit}
-                      </option>
-                    ))
+                    <option key={unit} value={unit} className="bg-slate-800">
+                      {unit}
+                    </option>
+                  ))
                   : Object.entries(currentCategory.units).map(([key, unit]: [string, any]) => (
-                      <option key={key} value={key} className="bg-slate-800">
-                        {unit.name} ({key})
-                      </option>
-                    ))
+                    <option key={key} value={key} className="bg-slate-800">
+                      {unit.name} ({key})
+                    </option>
+                  ))
                 }
               </select>
             </div>
@@ -208,15 +207,15 @@ const UnitConverter = () => {
               >
                 {currentCategory.special
                   ? (currentCategory.units as string[]).map((unit) => (
-                      <option key={unit} value={unit} className="bg-slate-800">
-                        {unit}
-                      </option>
-                    ))
+                    <option key={unit} value={unit} className="bg-slate-800">
+                      {unit}
+                    </option>
+                  ))
                   : Object.entries(currentCategory.units).map(([key, unit]: [string, any]) => (
-                      <option key={key} value={key} className="bg-slate-800">
-                        {unit.name} ({key})
-                      </option>
-                    ))
+                    <option key={key} value={key} className="bg-slate-800">
+                      {unit.name} ({key})
+                    </option>
+                  ))
                 }
               </select>
             </div>

@@ -48,7 +48,7 @@ export default function PMICalculator() {
           des pertes par frottements. Elle est toujours supérieure à la PME.
         </p>
         <div className="bg-black/20 rounded px-3 py-2 border border-white/10">
-          <p className="font-mono text-sm">PMI = (Ci × τ × 4π) / Vd</p>
+          <p className="font-mono text-sm">PMI = (Ci × τ × 2π) / Vd</p>
           <p className="text-xs text-white/60 mt-2">
             Ci : Couple indiqué (N·m) | Vd : Cylindrée (m³) | τ : Rapport de cycle
           </p>

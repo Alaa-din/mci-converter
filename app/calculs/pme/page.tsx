@@ -2,13 +2,16 @@
 
 import React, { useState } from 'react';
 import { Gauge } from 'lucide-react';
-import { calculatePME } from '@/lib/mci';
+import { calculatePME, calculatePMEFromPe } from '@/lib/mci';
 import CalculatorLayout, { CalculatorForm } from '@/components/CalculatorLayout';
 import PedagogicalSteps from '@/components/PedagogicalSteps';
 import type { Metadata } from 'next';
 
 export default function PMECalculator() {
+  const [method, setMethod] = useState<'torque' | 'power'>('torque');
   const [Ce, setCe] = useState('');
+  const [Pe, setPe] = useState('');
+  const [N, setN] = useState('');
   const [Vd, setVd] = useState('');
   const [tau, setTau] = useState('');
   const [showSteps, setShowSteps] = useState(false);
@@ -16,22 +19,29 @@ export default function PMECalculator() {
 
   const handleCalculate = () => {
     try {
-      const params = {
-        Ce: parseFloat(Ce),
-        Vd: parseFloat(Vd) / 1e6,
-        tau: parseFloat(tau),
+      const params: any = {
+        Vd: parseFloat(Vd) / 1e6, // cm3 -> m3
       };
 
-      const calcResult = calculatePME(params, showSteps);
-      setResult(calcResult);
+      if (method === 'torque') {
+        params.Ce = parseFloat(Ce);
+        params.tau = parseFloat(tau);
+        setResult(calculatePME(params, showSteps));
+      } else {
+        params.Pe = parseFloat(Pe) * 1000; // kW -> W
+        params.N = parseFloat(N);
+        setResult(calculatePMEFromPe(params, showSteps));
+      }
     } catch (error: any) {
       alert(error.message);
     }
   };
 
   const presets = [
-    { id: 'preset-ce-1', label: 'Citadine', value: 150, unit: 'N·m', targetInput: 'Ce' },
-    { id: 'preset-ce-2', label: 'Sportive', value: 400, unit: 'N·m', targetInput: 'Ce' },
+    { id: 'preset-ce-1', label: 'Citadine (Ce)', value: 150, unit: 'N·m', targetInput: 'Ce' },
+    { id: 'preset-ce-2', label: 'Sportive (Ce)', value: 400, unit: 'N·m', targetInput: 'Ce' },
+    { id: 'preset-pe-1', label: '70 kW', value: 70, unit: 'kW', targetInput: 'Pe' },
+    { id: 'preset-pe-2', label: '200 kW', value: 200, unit: 'kW', targetInput: 'Pe' },
     { id: 'preset-vd-1', label: '1.6L', value: 1600, unit: 'cm³', targetInput: 'Vd' },
     { id: 'preset-vd-2', label: '3.0L', value: 3000, unit: 'cm³', targetInput: 'Vd' },
     { id: 'preset-tau-1', label: '4 temps', value: 2, unit: '', targetInput: 'tau' },
@@ -51,23 +61,75 @@ export default function PMECalculator() {
           produirait le même travail que le cycle réel. C&apos;est un indicateur de l&apos;efficacité du moteur.
         </p>
         <div className="bg-black/20 rounded px-3 py-2 border border-white/10">
-          <p className="font-mono text-sm">PME = (Ce × τ × 4π) / Vd</p>
+          {method === 'torque' ? (
+            <p className="font-mono text-sm">PME = (Ce × τ × 2π) / Vd</p>
+          ) : (
+            <p className="font-mono text-sm">PME = (Pe × 120) / (Vd × N) (4 temps)</p>
+          )}
           <p className="text-xs text-white/60 mt-2">
-            Ce : Couple effectif (N·m) | Vd : Cylindrée (m³) | τ : Rapport de cycle (2 pour 4 temps)
+            Ce : Couple (N·m) | Pe : Puissance (W) | Vd : Cylindrée (m³) | N : Vitesse (tr/min)
           </p>
         </div>
       </div>
 
+      <div className="flex gap-2 mb-4">
+        <button
+          onClick={() => setMethod('torque')}
+          className={`flex-1 py-1.5 text-sm rounded-lg transition-all ${method === 'torque'
+            ? 'bg-blue-400/20 text-blue-300 border border-blue-400/50'
+            : 'bg-white/5 text-white/60 hover:bg-white/10'
+            }`}
+        >
+          Via Couple (Ce)
+        </button>
+        <button
+          onClick={() => setMethod('power')}
+          className={`flex-1 py-1.5 text-sm rounded-lg transition-all ${method === 'power'
+            ? 'bg-blue-400/20 text-blue-300 border border-blue-400/50'
+            : 'bg-white/5 text-white/60 hover:bg-white/10'
+            }`}
+        >
+          Via Puissance (Pe) - 4 temps
+        </button>
+      </div>
+
       <CalculatorForm
         inputs={[
-          {
-            id: 'Ce',
-            label: 'Couple effectif (Ce)',
-            value: Ce,
-            onChange: setCe,
-            unit: 'N·m',
-            placeholder: '200',
-          },
+          ...(method === 'torque' ? [
+            {
+              id: 'Ce',
+              label: 'Couple effectif (Ce)',
+              value: Ce,
+              onChange: setCe,
+              unit: 'N·m',
+              placeholder: '200',
+            },
+            {
+              id: 'tau',
+              label: 'Rapport de cycle (τ)',
+              value: tau,
+              onChange: setTau,
+              unit: '',
+              placeholder: '2',
+            },
+          ] : [
+            {
+              id: 'Pe',
+              label: 'Puissance effective (Pe)',
+              value: Pe,
+              onChange: setPe,
+              unit: 'kW',
+              placeholder: '100',
+            },
+            {
+              id: 'N',
+              label: 'Vitesse de rotation (N)',
+              value: N,
+              onChange: setN,
+              unit: 'tr/min',
+              placeholder: '4000',
+            },
+          ]),
           {
             id: 'Vd',
             label: 'Cylindrée (Vd)',
@@ -75,14 +137,6 @@ export default function PMECalculator() {
             onChange: setVd,
             unit: 'cm³',
             placeholder: '2000',
-          },
-          {
-            id: 'tau',
-            label: 'Rapport de cycle (τ)',
-            value: tau,
-            onChange: setTau,
-            unit: '',
-            placeholder: '2',
           },
         ]}
         presets={presets}
