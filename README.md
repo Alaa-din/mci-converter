@@ -1,124 +1,209 @@
-# 🔧 MCI Converter - Convertisseur d'Unités pour Moteurs à Combustion Interne
+# Calculateur MCI - Moteurs à Combustion Interne
 
+[![Next.js](https://img.shields.io/badge/Next.js-15.x-black?style=flat-square&logo=next.js)](https://nextjs.org/)
 [![React](https://img.shields.io/badge/React-19.x-61DAFB?style=flat-square&logo=react)](https://reactjs.org/)
-[![Vite](https://img.shields.io/badge/Vite-7.x-646CFF?style=flat-square&logo=vite)](https://vitejs.dev/)
-[![TailwindCSS](https://img.shields.io/badge/Tailwind-4.x-38B2AC?style=flat-square&logo=tailwind-css)](https://tailwindcss.com/)
+[![TailwindCSS](https://img.shields.io/badge/Tailwind-3.x-38B2AC?style=flat-square&logo=tailwind-css)](https://tailwindcss.com/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.x-3178C6?style=flat-square&logo=typescript)](https://www.typescriptlang.org/)
 [![License](https://img.shields.io/badge/License-MIT-green?style=flat-square)](LICENSE)
 
-Un convertisseur d'unités moderne et élégant, spécialement conçu pour les ingénieurs et passionnés de moteurs à combustion interne (MCI).
+Calculateur professionnel et outil pédagogique pour l'ingénierie des moteurs à combustion interne. Développé avec Next.js 15, React 19 et TypeScript.
 
-![MCI Converter Screenshot](./docs/screenshot.png)
+## Fonctionnalités
 
-## ✨ Fonctionnalités
+### Calculateurs Professionnels
 
-- **6 catégories de conversion** :
-  - ⚡ **Puissance** : Watt, Kilowatt, Cheval vapeur (CV), Horsepower (HP)
-  - 🎯 **Couple** : Newton-mètre, Kilogramme-mètre, Livre-pied
-  - 💨 **Pression** : Pascal, Kilopascal, Bar, PSI, Atmosphère
-  - 🌡️ **Température** : Celsius, Fahrenheit, Kelvin
-  - 💧 **Cylindrée/Volume** : cm³, Litre, in³
-  - 🔄 **Vitesse de rotation** : RPM, rad/s, Hz
+- **PME/PMI** : Pressions moyennes effective et indiquée
+- **Puissance** : Pe (effective) et Pi (indiquée)
+- **Couple** : Ce (effectif) et Ci (indiqué)
+- **Rendements** : Mécanique, thermique indiqué, thermique effectif
+- **Consommation** : Horaire (Co) et spécifique (Cs)
 
-- **Interface moderne** avec effets glassmorphisme et gradient sombre
-- **Responsive** : fonctionne sur desktop, tablette et mobile
-- **Temps réel** : conversion instantanée avec précision jusqu'à 4 décimales
+### Mode Étudiant
 
-## 🚀 Installation
+Activez le mode pédagogique pour afficher :
+
+1. Formules mathématiques
+2. Substitution avec vos valeurs
+3. Calculs étape par étape
+4. Résultat final
+5. Interprétation physique
+
+### Interface Interactive
+
+- **Drag & Drop** : Glissez-déposez des préréglages dans les champs
+- **Préréglages** : Valeurs typiques (citadine, sportive, essence, diesel)
+- **Responsive** : Interface adaptée mobile, tablette et desktop
+- **Design moderne** : Glassmorphisme et gradients sombres
+
+### Convertisseur d'Unités
+
+Convertisseur intégré pour :
+
+- Puissance (W, kW, ch, hp)
+- Couple (N·m, kg·m, lb·ft)
+- Pression (Pa, kPa, bar, psi, atm)
+- Température (°C, °F, K)
+- Cylindrée (cm³, L, in³)
+- Vitesse de rotation (rpm, rad/s, Hz)
+
+## Installation
 
 ### Prérequis
 
-- [Node.js](https://nodejs.org/) (v18 ou supérieur)
+- [Node.js](https://nodejs.org/) v18+
 - npm ou yarn
 
-### Étapes
+### Démarrage
 
-1. **Cloner le repository**
-   ```bash
-   git clone https://github.com/Alaa-din/mci-converter.git
-   cd mci-converter
-   ```
+```bash
+git clone https://github.com/votre-username/mci-converter.git
+cd mci-converter
 
-2. **Installer les dépendances**
-   ```bash
-   npm install
-   ```
+npm install
 
-3. **Lancer le serveur de développement**
-   ```bash
-   npm run dev
-   ```
+npm run dev
+```
 
-4. **Ouvrir dans le navigateur**
-   ```
-   http://localhost:5173
-   ```
+Ouvrez [http://localhost:3000](http://localhost:3000) dans votre navigateur.
 
-## 📦 Scripts Disponibles
+## Scripts Disponibles
 
 | Commande | Description |
 |----------|-------------|
-| `npm run dev` | Lance le serveur de développement |
-| `npm run build` | Compile l'application pour la production |
-| `npm run preview` | Prévisualise la version de production |
+| `npm run dev` | Serveur de développement |
+| `npm run build` | Build de production |
+| `npm start` | Serveur de production |
+| `npm run lint` | Vérification ESLint |
 
-## 🛠️ Technologies Utilisées
+## Structure du Projet
 
+```
+mci-converter/
+├── app/                    # Next.js App Router
+│   ├── calculs/           # Pages de calcul
+│   │   ├── pme/
+│   │   ├── pmi/
+│   │   ├── puissance/
+│   │   ├── couple/
+│   │   ├── rendement/
+│   │   └── consommation/
+│   ├── layout.tsx         # Layout principal
+│   ├── page.tsx           # Page d'accueil
+│   ├── robots.ts          # SEO robots.txt
+│   └── sitemap.ts         # Sitemap XML
+├── components/            # Composants React
+│   ├── CalculatorLayout.tsx
+│   ├── DraggableInput.tsx
+│   ├── PedagogicalSteps.tsx
+│   └── UnitConverter.tsx
+├── lib/                   # Bibliothèque de calculs
+│   └── mci/
+│       ├── pressures.ts   # PME, PMI, PMF
+│       ├── powers.ts      # Pe, Pi
+│       ├── torques.ts     # Ce, Ci
+│       ├── efficiency.ts  # Rendements
+│       ├── consumption.ts # Co, Cs
+│       ├── constants.ts
+│       ├── types.ts
+│       └── index.ts
+└── public/                # Assets statiques
+```
+
+## Formules Implémentées
+
+### Pressions
+
+| Formule | Description |
+|---------|-------------|
+| `PME = (Ce × τ × 4π) / Vd` | Pression Moyenne Effective |
+| `PMI = (Ci × τ × 4π) / Vd` | Pression Moyenne Indiquée |
+| `PMF = PMI - PME` | Pression de Frottement |
+
+### Puissances et Couples
+
+| Formule | Description |
+|---------|-------------|
+| `Pe = Ce × ω` | Puissance Effective |
+| `Pi = Ci × ω` | Puissance Indiquée |
+| `Ce = Pe / ω` | Couple Effectif |
+| `Ci = Pi / ω` | Couple Indiqué |
+
+### Rendements
+
+| Formule | Description |
+|---------|-------------|
+| `ηm = Pe / Pi` | Rendement Mécanique |
+| `ηthi = Pi / (ṁf × PCI)` | Rendement Thermique Indiqué |
+| `ηthe = Pe / (ṁf × PCI)` | Rendement Thermique Effectif |
+
+### Consommations
+
+| Formule | Description |
+|---------|-------------|
+| `Co = ṁf × 3600` | Consommation Horaire (kg/h) |
+| `Cs = (ṁf × 3.6 × 10⁶) / Pe` | Consommation Spécifique (g/kWh) |
+
+## Technologies
+
+- **[Next.js 15](https://nextjs.org/)** - Framework React avec App Router
 - **[React 19](https://reactjs.org/)** - Bibliothèque UI
-- **[Vite 7](https://vitejs.dev/)** - Outil de build ultra-rapide
-- **[Tailwind CSS 4](https://tailwindcss.com/)** - Framework CSS utilitaire
+- **[TypeScript](https://www.typescriptlang.org/)** - Typage statique
+- **[Tailwind CSS 3](https://tailwindcss.com/)** - Framework CSS utilitaire
+- **[@dnd-kit](https://dndkit.com/)** - Drag & Drop accessible
 - **[Lucide React](https://lucide.dev/)** - Icônes modernes
 
-## 📐 Formules de Conversion
+## SEO et Performance
 
-### Puissance
-| Unité | Facteur (vers Watt) |
-|-------|---------------------|
-| W | 1 |
-| kW | 1000 |
-| ch (CV) | 735.5 |
-| hp | 745.7 |
+- Pages statiques générées (SSG)
+- Metadata Next.js pour chaque page
+- Sitemap XML automatique
+- robots.txt configuré
+- Optimisation des images
+- Code splitting automatique
 
-### Couple
-| Unité | Facteur (vers N·m) |
-|-------|---------------------|
-| N·m | 1 |
-| kg·m | 9.80665 |
-| lb·ft | 1.35582 |
+## Déploiement
 
-### Pression
-| Unité | Facteur (vers Pa) |
-|-------|-------------------|
-| Pa | 1 |
-| kPa | 1000 |
-| bar | 100000 |
-| psi | 6894.76 |
-| atm | 101325 |
+### Vercel (Recommandé)
 
-### Température
-- °C → °F : `(°C × 9/5) + 32`
-- °C → K : `°C + 273.15`
-- °F → °C : `(°F - 32) × 5/9`
+1. Connectez votre repository GitHub à [Vercel](https://vercel.com)
+2. Déployez automatiquement
 
-## 🤝 Contribution
+### Autre hébergeur
 
-Les contributions sont les bienvenues ! N'hésitez pas à :
+```bash
+npm run build
+npm start
+```
+
+## Contribution
+
+Les contributions sont bienvenues !
 
 1. Fork le projet
-2. Créer une branche feature (`git checkout -b feature/AmazingFeature`)
-3. Commit vos changements (`git commit -m 'Add some AmazingFeature'`)
+2. Créez une branche (`git checkout -b feature/AmazingFeature`)
+3. Committez vos changements (`git commit -m 'Add AmazingFeature'`)
 4. Push sur la branche (`git push origin feature/AmazingFeature`)
-5. Ouvrir une Pull Request
+5. Ouvrez une Pull Request
 
-## 📄 Licence
+## Licence
 
-Ce projet est sous licence MIT. Voir le fichier [LICENSE](LICENSE) pour plus de détails.
+Projet sous licence MIT. Voir [LICENSE](LICENSE) pour plus de détails.
 
-## 👤 Auteur
+## Auteur
 
-Développé avec ❤️ pour la communauté automobile et mécanique.
+Développé pour la communauté d'ingénierie automobile et mécanique.
+
+## Ressources Pédagogiques
+
+Cet outil est conçu pour accompagner les cours de :
+
+- Thermodynamique des moteurs
+- Génie mécanique
+- Ingénierie automobile
+- Conversion d'énergie
 
 ---
 
 <p align="center">
-  <sub>⭐ N'oubliez pas de mettre une étoile si ce projet vous a été utile !</sub>
+  <sub>Fait avec passion pour l'ingénierie automobile</sub>
 </p>
